@@ -24,17 +24,36 @@ Application de gestion des tâches avec pipeline CI/CD et déploiement automatis
 
 ```bash
 docker run -d --name pg-tasks -p 5432:5432 \
-  -e POSTGRES_DB=tasks -e POSTGRES_USER=tasks \
-  -e POSTGRES_PASSWORD=<mot_de_passe> postgres:16
+  -e POSTGRES_DB=tasks \
+  -e POSTGRES_USER=tasks_user \
+  -e POSTGRES_PASSWORD=<mot_de_passe> \
+  postgres:16
 ```
 
-2. Définir les variables d'environnement (jamais de mot de passe dans le code) :
+Sous PowerShell, remplace le `\` de fin de ligne par un accent grave `` ` ``.
+Si le conteneur existe déjà : `docker start pg-tasks`.
 
-| Variable | Rôle |
-| --- | --- |
-| `DB_URL` | URL JDBC de la base |
-| `DB_USER` | Utilisateur de la base |
-| `DB_PASSWORD` | Mot de passe de la base |
+2. Définir les variables d'environnement (jamais de mot de passe dans le code).
+Seul `DB_PASSWORD` est obligatoire (il doit être identique à `POSTGRES_PASSWORD`),
+les autres ont une valeur par défaut :
+
+| Variable | Rôle | Valeur par défaut |
+| --- | --- | --- |
+| `DB_PASSWORD` | Mot de passe de la base | aucune (obligatoire) |
+| `DB_USER` | Utilisateur de la base | `tasks_user` |
+| `DB_URL` | URL JDBC de la base | `jdbc:postgresql://localhost:5432/tasks` |
+
+Linux / macOS :
+
+```bash
+export DB_PASSWORD=<mot_de_passe>
+```
+
+PowerShell :
+
+```powershell
+$env:DB_PASSWORD = "<mot_de_passe>"
+```
 
 3. Lancer l'application :
 
@@ -43,7 +62,10 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
-4. Vérifier : `GET http://localhost:8080/api/health`
+4. Vérifier :
+
+- `GET http://localhost:8080/api/health` renvoie `{"status":"ok"}`
+- `GET http://localhost:8080/actuator/health` renvoie `"status":"UP"`
 
 ## Lancer les tests
 
