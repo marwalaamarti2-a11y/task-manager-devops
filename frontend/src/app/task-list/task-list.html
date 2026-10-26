@@ -1,0 +1,26 @@
+<h2>Mes tâches</h2>
+
+@if (tasks.length === 0) {
+  <p>Aucune tâche</p>
+} @else {
+  <table>
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Priorité</th>
+        <th>Échéance</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (task of tasks; track task.id) {
+        <tr>
+          <td>{{ task.title }}</td>
+          <td>{{ task.priority }}</td>
+          <td>{{ task.dueDate }}</td>
+          <td>{{ statusLabels[task.status] }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
